@@ -16,7 +16,7 @@
 
 @implementation MLIAPManager
 
-#pragma mark - ****************  Singleton
+#pragma mark - ================ Singleton ================= 
 
 + (instancetype)sharedManager {
     
@@ -29,9 +29,9 @@
     return iapManager;
 }
 
-#pragma mark - ****************  Public Methods
+#pragma mark - ================ Public Methods =================
 
-/** TODO:请求商品*/
+#pragma mark ==== 请求商品
 - (BOOL)requestProductWithId:(NSString *)productId {
     
     if (productId.length > 0) {
@@ -46,7 +46,7 @@
     return NO;
 }
 
-/** TODO:购买商品*/
+#pragma mark ==== 购买商品
 - (BOOL)purchaseProduct:(SKProduct *)skProduct {
     
     if (skProduct != nil) {
@@ -62,7 +62,7 @@
     return NO;
 }
 
-/** TODO:非消耗品恢复*/
+#pragma mark ==== 商品恢复
 - (BOOL)restorePurchase {
     
     if ([SKPaymentQueue canMakePayments]) {
@@ -75,8 +75,25 @@
     return NO;
 }
 
+#pragma mark ====  刷新凭证
+- (void)refreshReceipt {
+    SKReceiptRefreshRequest *request = [[SKReceiptRefreshRequest alloc] init];
+    request.delegate = self;
+    [request start];
+}
 
-#pragma mark - ****************  SKProductsRequest Delegate
+#pragma mark - ================ SKRequestDelegate =================
+
+- (void)requestDidFinish:(SKRequest *)request {
+    if ([request isKindOfClass:[SKReceiptRefreshRequest class]]) {
+        NSURL *receiptUrl = [[NSBundle mainBundle] appStoreReceiptURL];
+        NSData *receiptData = [NSData dataWithContentsOfURL:receiptUrl];
+        [_delegate successedWithReceipt:receiptData];
+    }
+}
+
+
+#pragma mark - ================ SKProductsRequest Delegate =================
 
 - (void)productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response {
     
@@ -90,7 +107,7 @@
     }
 }
 
-#pragma mark - ****************  SKPaymentTransactionObserver Delegate
+#pragma mark - ================ SKPaymentTransactionObserver Delegate =================
 
 - (void)paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray<SKPaymentTransaction *> *)transactions {
     
@@ -115,15 +132,13 @@
     }
 }
 
-
-
-#pragma mark - ****************  Private Methods
+#pragma mark - ================ Private Methods =================
 
 - (void)completeTransaction:(SKPaymentTransaction *)transaction {
     
     NSURL *receiptUrl = [[NSBundle mainBundle] appStoreReceiptURL];
     NSData *receiptData = [NSData dataWithContentsOfURL:receiptUrl];
-    [_delegate successfulPurchaseOfId:transaction.payment.productIdentifier andReceipt:receiptData];
+    [_delegate successedWithReceipt:receiptData];
     [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
 }
 

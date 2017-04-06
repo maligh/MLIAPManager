@@ -10,7 +10,7 @@
 #import "MLIAPManager.h"
 
 //最好保存在服务器上，就可以不更新版本实现在Apple后台动态配置商品了
-static NSString * const productId = @"Your productId";
+static NSString * const productId = @"jinbi001";
 
 @interface ViewController() <MLIAPManagerDelegate>
 
@@ -18,10 +18,17 @@ static NSString * const productId = @"Your productId";
 
 @implementation ViewController
 
-#pragma mark - ****************  Lifecycle
+#pragma mark - ================ LifeCycle =================
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    UIButton *refreshBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    refreshBtn.frame = CGRectMake(100, 100, 100, 44);
+    [refreshBtn setTitle:@"刷新凭证" forState:UIControlStateNormal];
+    [refreshBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    refreshBtn.backgroundColor = [UIColor blueColor];
+    [refreshBtn addTarget:self action:@selector(refreshBtnClicked) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:refreshBtn];
     
     [MLIAPManager sharedManager].delegate = self;
 }
@@ -31,15 +38,20 @@ static NSString * const productId = @"Your productId";
     
 }
 
-
-#pragma mark - ****************  Touches
+#pragma mark - ================ Touches =================
 
 -(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     [[MLIAPManager sharedManager] requestProductWithId:productId];
 }
 
+#pragma mark - ================ Actions =================
 
-#pragma mark - **************** MLIAPManager Delegate
+- (void)refreshBtnClicked {
+    [[MLIAPManager sharedManager] refreshReceipt];
+}
+
+
+#pragma mark - ================ MLIAPManager Delegate =================
 
 - (void)receiveProduct:(SKProduct *)product {
     
@@ -55,7 +67,7 @@ static NSString * const productId = @"Your productId";
     }
 }
 
-- (void)successfulPurchaseOfId:(NSString *)productId andReceipt:(NSData *)transactionReceipt {
+- (void)successedWithReceipt:(NSData *)transactionReceipt {
     NSLog(@"购买成功");
 
     NSString  *transactionReceiptString = [transactionReceipt base64EncodedStringWithOptions:0];

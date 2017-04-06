@@ -15,7 +15,7 @@
 
 - (void)receiveProduct:(SKProduct *)product;
 
-- (void)successfulPurchaseOfId:(NSString *)productId andReceipt:(NSData *)transactionReceipt;
+- (void)successedWithReceipt:(NSData *)transactionReceipt;
 
 - (void)failedPurchaseWithError:(NSString *)errorDescripiton;
 
@@ -33,6 +33,7 @@
 - (BOOL)requestProductWithId:(NSString *)productId;
 - (BOOL)purchaseProduct:(SKProduct *)skProduct;
 - (BOOL)restorePurchase;
+- (void)refreshReceipt;
 
 @end
 
