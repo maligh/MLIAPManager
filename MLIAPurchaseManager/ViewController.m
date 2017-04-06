@@ -10,7 +10,7 @@
 #import "MLIAPManager.h"
 
 //最好保存在服务器上，就可以不更新版本实现在Apple后台动态配置商品了
-static NSString * const productId = @"jinbi001";
+static NSString * const productId = @"Your productId";
 
 @interface ViewController() <MLIAPManagerDelegate>
 
