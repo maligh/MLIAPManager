@@ -81,6 +81,12 @@ static NSString * const productId = @"Your productId";
          将该凭证发送到苹果的服务器验证，并将验证结果返回给客户端。
          如果需要，修改用户相应的会员权限
         */
+        
+        /**
+        if (凭证校验成功) {
+         [[MLIAPManager sharedManager] finishTransaction];
+        }
+        */
     }
 }
 

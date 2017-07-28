@@ -34,6 +34,7 @@
 - (BOOL)purchaseProduct:(SKProduct *)skProduct;
 - (BOOL)restorePurchase;
 - (void)refreshReceipt;
+- (void)finishTransaction;
 
 @end
 

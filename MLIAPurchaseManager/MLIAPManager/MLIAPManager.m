@@ -12,6 +12,8 @@
     SKProduct *myProduct;
 }
 
+@property (nonatomic, strong) SKPaymentTransaction *currentTransaction;
+
 @end
 
 @implementation MLIAPManager
@@ -74,6 +76,13 @@
     }
     return NO;
 }
+
+#pragma mark ==== 结束这笔交易
+- (void)finishTransaction {
+	[[SKPaymentQueue defaultQueue] finishTransaction:self.currentTransaction];
+}
+
+
 
 #pragma mark ====  刷新凭证
 - (void)refreshReceipt {
@@ -139,7 +148,7 @@
     NSURL *receiptUrl = [[NSBundle mainBundle] appStoreReceiptURL];
     NSData *receiptData = [NSData dataWithContentsOfURL:receiptUrl];
     [_delegate successedWithReceipt:receiptData];
-    [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
+    self.currentTransaction = transaction;
 }
 
 
@@ -149,6 +158,7 @@
         [_delegate failedPurchaseWithError:transaction.error.localizedDescription];
     }
     [[SKPaymentQueue defaultQueue] finishTransaction: transaction];
+    self.currentTransaction = transaction;
 }
 
 @end
